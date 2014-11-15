@@ -83,6 +83,11 @@ func fatalExec(cmd *exec.Cmd) {
 	}
 }
 
+// makeList is a helper func added to the tempalte so you can define slices in the template source
+func makeList(args ...interface{}) []interface{} {
+	return args
+}
+
 func main() {
 	// process flags
 	if _, err := flags.Parse(&opts); err != nil {
@@ -101,8 +106,12 @@ func main() {
 		log.Fatalf("Error reading templatefile: %s \n %s", opts.Template, err.Error())
 	}
 
+	// functions to export to the template
+	funcMap := map[string]interface{}{"makeList": makeList}
 	// assemble template
-	t := template.Must(template.New("letter").Parse(string(inputTemplate)))
+	t := template.New("letter").Funcs(template.FuncMap(funcMap))
+	// parse it
+	template.Must(t.Parse(string(inputTemplate)))
 
 	binPath := FindBin()
 	// Set CWD to project dir

@@ -10,9 +10,12 @@ FROM centos:centos7
 MAINTAINER   somebody@devnull
 
 RUN yum groupinstall -y 'Development Tools'
-RUN yum install -y curl
-RUN yum install -y wget 
-RUN yum install -y ruby-devel
+
+{{/* This is a contrived example of using makeList */}}
+{{ $pkgs := makeList "curl" "wget" "ruby-devel" }}
+{{ range $pkgs }}
+RUN yum install -y {{.}}
+{{ end }}
 
 # install epel repo
 {{if eq .OS "el5"}}
