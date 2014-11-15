@@ -15,7 +15,9 @@ see examples directory
 ### Template Functions
 * `makeList` - function that will take arguments and return them so you can range over them someplace else in your template
 
+````
     {{ $foo := makeList "thing" "otherthing" "morethings" }} 
     {{ range $foo }}
      the thing here is: {{.}}
-    {{endll}}
+    {{ end }}
+````
