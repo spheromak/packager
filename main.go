@@ -10,9 +10,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"code.google.com/p/go-uuid/uuid"
-
 	"github.com/jessevdk/go-flags"
+	"github.com/pborman/uuid"
 )
 
 // Options are the  CLI options used by go-flags
