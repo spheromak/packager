@@ -1,4 +1,4 @@
-# collectd from FPM  
+# collectd from FPM
 # TODO: build with envar for version
 {{ if eq .OS "el5" }}
 FROM centos:centos5
@@ -19,39 +19,39 @@ RUN yum install -y {{.}}
 
 # install epel repo
 {{if eq .OS "el5"}}
-RUN rpm -Uhv http://mirror.sfo12.us.leaseweb.net/epel/5/i386/epel-release-5-4.noarch.rpm
+RUN rpm -Uhv https://dl.fedoraproject.org/pub/epel/epel-release-latest-5.noarch.rpm
 {{ else if eq .OS "el6" }}
-RUN rpm -Uhv http://mirrors.kernel.org/fedora-epel/6/i386/epel-release-6-8.noarch.rpm 
+RUN rpm -Uhv https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
 {{ else if eq .OS "el7" }}
-RUN rpm -Uhv http://mirror.steadfast.net/epel/beta/7/x86_64/epel-release-7-0.2.noarch.rpm
+RUN rpm -Uhv https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 {{end}}
 
 # collectd deps
-RUN yum install -y  libgcrypt-devel librabbitmq-devel curl-devel libxml2-devel yajl-devel libdbi-devel libpcap-devel ganglia-devel OpenIPMI-devel iptables-devel java-devel jpackage-utils libvirt-devel libmemcached-devel mysql-devel libnotify-devel gtk2-devel libesmtp-devel nut-devel perl-ExtUtils-Embed protobuf-c-devel liboping-devel postgresql-devel python-devel rrdtool-devel lm_sensors-devel net-snmp-devel varnish-libs-devel 
+RUN yum install -y  libgcrypt-devel librabbitmq-devel curl-devel libxml2-devel yajl-devel libdbi-devel libpcap-devel ganglia-devel OpenIPMI-devel iptables-devel java-devel jpackage-utils libvirt-devel libmemcached-devel mysql-devel libnotify-devel gtk2-devel libesmtp-devel nut-devel perl-ExtUtils-Embed protobuf-c-devel liboping-devel postgresql-devel python-devel rrdtool-devel lm_sensors-devel net-snmp-devel varnish-libs-devel
 
 # Collectd Source
 RUN wget https://collectd.org/files/collectd-{{.Version}}.tar.bz2  --no-check-certificate
-RUN tar xjvf collectd-{{.Version}}.tar.bz2 
+RUN tar xjvf collectd-{{.Version}}.tar.bz2
 RUN mv collectd-{{.Version}} collectd
 
-# install fpm 
+# install fpm
 RUN yum install -y rubygems
 RUN gem install fpm
 
 
-# build 
+# build
 WORKDIR /collectd
 
 # add our init
 ADD collectd.init /etc/init.d/collectd
 
-RUN mkdir /opt/collectd -p 
+RUN mkdir /opt/collectd -p
 {{ if eq .OS "el5" }}
 RUN ./configure --prefix=/opt/collectd --disable-python
 {{ else }}
-RUN ./configure --prefix=/opt/collectd 
+RUN ./configure --prefix=/opt/collectd
 {{end}}
-RUN make 
+RUN make
 RUN make install
 RUN fpm -s dir -t rpm -n "collectd" -v {{.Version}} --directories /opt/collectd -m packager@devnull --iteration {{.Rev}} --url "http://collectd.org" --vendor "Packager" --category "System Environment/Daemons" --license "GPL"  --rpm-use-file-permissions  --config-files /opt/collectd/etc /opt/collectd  /etc/init.d/collectd
 
