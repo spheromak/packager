@@ -10,9 +10,8 @@ import (
 	"path/filepath"
 	"text/template"
 
-	"code.google.com/p/go-uuid/uuid"
-
 	"github.com/jessevdk/go-flags"
+	"github.com/pborman/uuid"
 )
 
 // Options are the  CLI options used by go-flags
@@ -30,7 +29,7 @@ type Options struct {
 	// OS's to build
 	BuildOS []string `short:"b" long:"build-os" description:"specify the os's too buld can use multiple times. Use comma sepparated list if using ENV Variable" env:"BUILDOS" env-delim:"," default:"el5" default:"el6" default:"el7"`
 	// Disable layer caching
-	DisableCache bool `short:"c" long:"disable-cache" description:"disable Docker layer caching for builds" default:"false" env:"DISABLE_CACHE"`
+	DisableCache bool `short:"c" long:"disable-cache" description:"disable Docker layer caching for builds" env:"DISABLE_CACHE"`
 	// populated by the build loop for the curent os. since we pass options into the template
 	OS string
 }
