@@ -93,6 +93,7 @@ func main() {
 		if err.(*flags.Error).Type == flags.ErrHelp {
 			os.Exit(0)
 		} else {
+			fmt.Println(err)
 			os.Exit(1)
 		}
 	}
